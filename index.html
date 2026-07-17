@@ -88,7 +88,18 @@
   .doc-code{ text-align:right; font-size:12px; opacity:.85; line-height:1.7; order:1; }
   .title-row{ text-align:center; margin-top:14px;}
   .title-row h1{ margin:0; font-size:26px; font-weight:800; letter-spacing:.5px;}
+  .title-row h1 .title-en{ font-size:14px; font-weight:600; opacity:.7; }
   .title-row span{ display:block; margin-top:4px; font-size:12.5px; opacity:.85; font-weight:500;}
+  .request-no{
+    margin-top:7px; font-weight:600; color:rgba(255,255,255,.6);
+    display:flex; align-items:center; justify-content:center; gap:3px;
+  }
+  .request-no > span{ font-size:10px; }
+  .request-no-input.request-no-input{
+    width:130px; text-align:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.35); border-radius:5px;
+    color:#fff; font-family:inherit; font-size:13px; font-weight:700; padding:3px 8px;
+  }
+  .request-no-input.request-no-input:focus{ outline:none; border-color:var(--gold-soft); background:rgba(255,255,255,.14); }
 
   .mode-switch{
     display:flex; gap:8px; padding:16px 32px 0; background:var(--paper);
@@ -112,12 +123,13 @@
   .section-head{
     background:linear-gradient(180deg, #f4f6f8, #eef1f4);
     border-bottom:1px solid var(--line-soft);
-    padding:11px 18px;
+    padding:10px 18px;
     font-weight:800;
-    font-size:14.5px;
+    font-size:13px;
     color:var(--navy);
     display:flex; align-items:center; gap:8px;
   }
+  .section-head .en{ font-size:10.5px; font-weight:600; color:var(--muted); }
   .section-head .dot{ width:8px;height:8px;border-radius:50%; background:var(--gold);}
   .section-body{ padding:16px 18px 18px; }
 
@@ -125,8 +137,13 @@
   .grid.cols-3{ grid-template-columns:repeat(3, 1fr); }
   .grid.grid-general{ grid-template-columns: 0.7fr 1.1fr 1.4fr; }
   .field{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .field.field-inline{ flex-direction:row; align-items:center; gap:10px; }
+  .field.field-inline label{ flex:none; white-space:nowrap; margin:0; }
+  .field.field-inline input{ flex:1; min-width:0; }
   .field.full{ grid-column:1 / -1; }
   label{ font-size:12.5px; font-weight:700; color:var(--navy); display:flex; justify-content:space-between; }
+  .en{ font-size:10px; font-weight:500; opacity:.65; }
+  label .en{ font-size:10px; font-weight:500; color:var(--muted); margin-inline-start:5px; }
   label .hint{ font-weight:500; color:var(--muted); font-size:11px;}
   input[type=text], input[type=number], input[type=date], select, textarea{
     font-family:inherit; font-size:14px; color:var(--ink);
@@ -178,9 +195,13 @@
   .radio-row label{ display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:700; color:var(--ink); }
   .radio-row input{ width:16px; height:16px; accent-color: var(--navy-2); }
 
-  .sign-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:4px;}
+  .sign-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:4px;}
+  .sign-grid.sign-grid-single{ grid-template-columns:minmax(160px,260px); justify-content:start; }
+  .sign-grid.sign-grid-centered{ grid-template-columns:repeat(2,minmax(140px,220px)); justify-content:center; }
+  .sign-box.sign-label-only .role{ margin-bottom:0; padding-top:2px; color:var(--muted); font-weight:700; }
   .sign-box{ text-align:center; }
   .sign-box .role{ font-size:12.5px; font-weight:800; color:var(--navy); margin-bottom:58px; }
+  .sign-box .role .en{ display:block; font-size:9.5px; font-weight:600; color:var(--muted); margin-top:2px; }
   .sign-line{ border-top:1px solid var(--line); padding-top:6px; font-size:11px; color:var(--muted); }
 
   .sub-label{
@@ -203,6 +224,10 @@
     border:1px solid #ecd8a6; border-radius:999px; padding:2px 9px; margin-inline-start:auto;
   }
   .no-print{ }
+  .bank-section-bold label{ font-weight:800; color:#111; }
+  .bank-section-bold label .en{ font-weight:700; color:#333; }
+  .bank-section-bold input{ font-weight:700; color:#111; }
+  .bank-section-bold .radio-row label{ font-weight:800; }
 
   @media screen and (max-width: 720px){
     .grid, .grid.cols-3, .grid.grid-general{ grid-template-columns:1fr; }
@@ -212,34 +237,47 @@
   }
 
   @media print{
-    @page{ size:A4; margin:8mm 10mm; }
-    html,body{ background:#fff; padding:0; margin:0; height:auto; }
+    @page{ size:A4; margin:6mm 8mm; }
+    html,body{ background:#fff; padding:0; margin:0; height:auto; font-size:13px; }
     .toolbar, .mode-switch, .btn, .no-print{ display:none !important; }
     .sheet{ box-shadow:none; border:none; border-radius:0; max-width:100%; }
-    .section{ break-inside:avoid; margin-top:8px; border-radius:8px; }
-    .section-head{ padding:5px 12px; font-size:11.5px; }
-    .section-body{ padding:8px 12px 10px; }
-    .grid{ gap:6px 14px; }
+    .section{ break-inside:avoid; margin-top:4px; border-radius:6px; }
+    .section-head{ padding:3px 10px; font-size:10.5px; }
+    .section-head .en{ font-size:9px; }
+    .section-head .no-print-badge{ font-size:8.5px; padding:1px 7px; }
+    .section-body{ padding:5px 10px 6px; }
+    .grid{ gap:4px 10px; }
     .grid.grid-general{ grid-template-columns: 0.55fr 1fr 1.55fr; }
-    .field{ gap:3px; }
-    label{ font-size:10px; }
-    label .hint{ font-size:9px; }
+    .field{ gap:1px; }
+    label{ font-size:9px; }
+    label .hint{ font-size:8px; }
+    label .en{ font-size:8px; }
     input, select, textarea{
-      border-color:#9a9a9a; padding:4px 7px; font-size:11px; border-radius:6px;
+      border-color:#9a9a9a; padding:2px 6px; font-size:9.5px; border-radius:5px;
     }
-    textarea{ min-height:22px; }
-    .amount-words{ padding:6px 9px; font-size:11.5px; }
-    .letterhead{ padding:10px 20px 8px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .org-logo-card img{ height:30px; }
-    .title-row{ margin-top:8px; }
-    .title-row h1{ font-size:18px; }
-    .title-row span{ font-size:9.5px; }
-    .radio-row{ padding-top:2px; gap:16px; }
-    .radio-row label{ font-size:11.5px; }
-    .sign-grid{ gap:10px; margin-top:6px !important; }
-    .sign-box .role{ margin-bottom:34px; font-size:10.5px; }
-    .sign-line{ font-size:9px; padding-top:4px; }
-    form{ padding:4px 20px 10px; }
+    textarea{ min-height:16px; }
+    .amount-words{ padding:4px 8px; font-size:10.5px; }
+    .day-name-hint{ font-size:9px; min-height:10px; }
+    .letterhead{ padding:6px 16px 5px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .org-logo-card{ padding:4px 8px; }
+    .org-logo-card img{ height:24px; }
+    .org-name{ font-size:11px; }
+    .org-name b{ font-size:13px; }
+    .doc-code{ font-size:10px; }
+    .title-row{ margin-top:3px; }
+    .request-no{ margin-top:1px; }
+    .request-no > span{ font-size:8px; }
+    .request-no-input.request-no-input{ width:100px; font-size:10px; padding:1px 5px; }
+    .title-row h1{ font-size:15px; }
+    .title-row h1 .title-en{ font-size:10px; }
+    .title-row span{ font-size:9px; }
+    .radio-row{ padding-top:1px; gap:14px; }
+    .radio-row label{ font-size:10.5px; }
+    .sign-grid{ gap:8px; margin-top:3px !important; }
+    .sign-box .role{ margin-bottom:20px; font-size:9.5px; }
+    .sign-box .role .en{ font-size:7.5px; margin-top:1px; }
+    .sign-line{ font-size:8px; padding-top:2px; }
+    form{ padding:1px 16px 6px; }
   }
 </style>
 </head>
@@ -247,6 +285,9 @@
 <body>
   <div class="toolbar">
     <button class="btn ghost danger" id="resetBtn" type="button">تفريغ النموذج</button>
+    <button class="btn ghost" id="loadTemplateBtn" type="button">📂 استدعاء نموذج محفوظ</button>
+    <button class="btn ghost" id="saveTemplateBtn" type="button">💾 حفظ نموذج (تمبلت)</button>
+    <input type="file" id="templateFileInput" accept="application/json,.json" style="display:none">
     <button class="btn" id="printBtn" type="button">🖨️ طباعة / حفظ PDF</button>
   </div>
 
@@ -261,18 +302,19 @@
           </div>
         </div>
         <div class="doc-code">
-          نموذج داخلى<br>
+          <span id="f_modelabel">نموذج داخلى <span class="en" style="opacity:.8;">Internal Form</span></span><br>
           <span class="no-print">تاريخ آخر تحديث: 17-6-2026</span>
         </div>
       </div>
       <div class="title-row">
-        <h1>طلب تحويل بنكى</h1>
+        <h1>طلب تحويل بنكى <span class="title-en">Bank Transfer Request</span></h1>
+        <div class="request-no"><span>رقم (</span> <input type="text" id="f_reqno" class="request-no-input" inputmode="numeric" autocomplete="off"> <span>)</span></div>
       </div>
     </div>
 
     <div class="mode-switch">
-      <button type="button" class="mode-btn active" data-mode="internal">تحويل داخلى (بين حسابات الجمعية)</button>
-      <button type="button" class="mode-btn" data-mode="external">تحويل خارجى (لجهة مستفيدة)</button>
+      <button type="button" class="mode-btn active" data-mode="internal">تحويل داخلى (بين حسابات الجمعية) <span class="en">Internal Transfer</span></button>
+      <button type="button" class="mode-btn" data-mode="external">تحويل خارجى (لجهة مستفيدة) <span class="en">External Transfer</span></button>
     </div>
 
     <form id="transferForm" onsubmit="return false;">
@@ -282,11 +324,11 @@
       </div>
 
       <div class="section">
-        <div class="section-head"><span class="dot"></span>البيانات العامة</div>
+        <div class="section-head"><span class="dot"></span>البيانات العامة <span class="en">General Information</span></div>
         <div class="section-body">
           <div class="grid grid-general">
             <div class="field field-date">
-              <label for="f_date">التاريخ</label>
+              <label for="f_date">التاريخ <span class="en">Date</span></label>
               <div class="date-input-group">
                 <input type="text" id="f_date" placeholder="يوم / شهر / سنة" maxlength="10" inputmode="numeric" autocomplete="off">
                 <button type="button" class="date-btn no-print" id="f_date_today" title="تعبئة تاريخ اليوم">اليوم</button>
@@ -296,51 +338,55 @@
               <div class="day-name-hint" id="f_dayname"></div>
             </div>
             <div class="field">
-              <label for="f_program">البرنامج</label>
+              <label for="f_program">البرنامج <span class="en">Program</span></label>
               <select id="f_program"><option value="">-- اختر البرنامج --</option></select>
             </div>
             <div class="field field-project">
-              <label for="f_project">المشروع</label>
+              <label for="f_project">المشروع <span class="en">Project</span></label>
               <input type="text" id="f_project" placeholder="اسم المشروع">
             </div>
-            <div class="field full">
-              <label for="f_purpose">الغرض من التحويل</label>
-              <textarea id="f_purpose" placeholder="اكتب الغرض من التحويل"></textarea>
+            <div class="field full field-inline">
+              <label for="f_purpose">الغرض من التحويل <span class="en">Purpose of Transfer</span></label>
+              <input type="text" id="f_purpose" placeholder="اكتب الغرض من التحويل">
             </div>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <div class="section-head"><span class="dot"></span>بيانات الحساب المخصوم منه (جمعية كاريتاس - مصر)</div>
+        <div class="section-head"><span class="dot"></span>بيانات الحساب المخصوم منه (جمعية كاريتاس - مصر) <span class="en">Source Account (Caritas Egypt)</span></div>
         <div class="section-body">
           <div class="grid cols-3">
             <div class="field full no-print">
-              <label for="f_srcband">البنـد / رقم الحساب <span class="hint">اختر من قائمة حسابات الجمعية</span></label>
+              <label for="f_srcband">البنـد / رقم الحساب <span class="en">Item / Account No.</span> <span class="hint">اختر من قائمة حسابات الجمعية</span></label>
               <select id="f_srcband"><option value="">-- اختر رقم الحساب --</option></select>
             </div>
             <div class="field">
-              <label>اسم البنك</label>
+              <label>اسم البنك <span class="en">Bank Name</span></label>
               <input type="text" id="f_srcbank" readonly>
             </div>
             <div class="field">
-              <label>العملة</label>
+              <label>العملة <span class="en">Currency</span></label>
               <input type="text" id="f_srccurrency" readonly>
             </div>
             <div class="field">
-              <label>رقم الحساب</label>
+              <label>رقم الحساب <span class="en">Account No.</span></label>
               <input type="text" id="f_srcaccount" readonly>
             </div>
             <div class="field">
-              <label>البند</label>
+              <label>البند <span class="en">Item</span></label>
               <input type="text" id="f_srcbandnum" readonly>
             </div>
             <div class="field">
-              <label for="f_amount">مبلغ التحويل</label>
+              <label for="f_amount">مبلغ التحويل <span class="en">Amount</span></label>
               <input type="number" step="0.01" min="0" id="f_amount" placeholder="0.00">
             </div>
+            <div class="field">
+              <label for="f_items">بنود المشروع <span class="en">Project Items</span></label>
+              <input type="text" id="f_items" placeholder="اكتب بنود المشروع">
+            </div>
             <div class="field full">
-              <label>المبلغ بالحروف</label>
+              <label>المبلغ بالحروف <span class="en">Amount in Words</span></label>
               <div class="amount-words" id="f_amountwords">—</div>
             </div>
           </div>
@@ -348,27 +394,27 @@
       </div>
 
       <div class="section" data-panel="internal">
-        <div class="section-head"><span class="dot"></span>بيانات المستفيد (فى حالة التحويل الداخلى)</div>
+        <div class="section-head"><span class="dot"></span>بيانات المستفيد (فى حالة التحويل الداخلى) <span class="en">Beneficiary (Internal Transfer)</span></div>
         <div class="section-body">
           <div class="grid">
             <div class="field full no-print">
-              <label for="f_dstband">البنـد / رقم الحساب المستفيد <span class="hint">اختر من قائمة حسابات الجمعية</span></label>
+              <label for="f_dstband">البنـد / رقم الحساب المستفيد <span class="en">Beneficiary Item / Account No.</span> <span class="hint">اختر من قائمة حسابات الجمعية</span></label>
               <select id="f_dstband"><option value="">-- اختر رقم الحساب --</option></select>
             </div>
             <div class="field">
-              <label>اسم البنك</label>
+              <label>اسم البنك <span class="en">Bank Name</span></label>
               <input type="text" id="f_dstbank" readonly>
             </div>
             <div class="field">
-              <label>العملة</label>
+              <label>العملة <span class="en">Currency</span></label>
               <input type="text" id="f_dstcurrency" readonly>
             </div>
             <div class="field">
-              <label>رقم الحساب</label>
+              <label>رقم الحساب <span class="en">Account No.</span></label>
               <input type="text" id="f_dstaccount" readonly>
             </div>
             <div class="field">
-              <label>البند</label>
+              <label>البند <span class="en">Item</span></label>
               <input type="text" id="f_dstbandnum" readonly>
             </div>
           </div>
@@ -376,23 +422,23 @@
       </div>
 
       <div class="section" data-panel="external">
-        <div class="section-head"><span class="dot"></span>بيانات المستفيد (فى حالة التحويل الخارجى)</div>
+        <div class="section-head"><span class="dot"></span>بيانات المستفيد (فى حالة التحويل الخارجى) <span class="en">Beneficiary (External Transfer)</span></div>
         <div class="section-body">
           <div class="grid cols-3">
             <div class="field full">
-              <label for="f_extname">اسم الجهة المحول إليها</label>
+              <label for="f_extname">اسم الجهة المحول إليها <span class="en">Beneficiary Name</span></label>
               <input type="text" id="f_extname" placeholder="اسم الجهة / الشخص المستفيد">
             </div>
             <div class="field">
-              <label for="f_extbank">اسم البنك</label>
+              <label for="f_extbank">اسم البنك <span class="en">Bank Name</span></label>
               <select id="f_extbank"><option value="">-- اختر اسم البنك --</option></select>
             </div>
             <div class="field">
-              <label for="f_extbranch">الفرع</label>
+              <label for="f_extbranch">الفرع <span class="en">Branch</span></label>
               <input type="text" id="f_extbranch">
             </div>
             <div class="field">
-              <label for="f_extaccount">رقم الحساب</label>
+              <label for="f_extaccount">رقم الحساب <span class="en">Account No.</span></label>
               <input type="text" id="f_extaccount">
             </div>
             <div class="field">
@@ -407,24 +453,35 @@
         </div>
       </div>
 
-      <div class="section no-print">
-        <div class="section-head"><span class="dot"></span>بيانات خاصة بقسم البنوك<span class="no-print-badge">للاستخدام الداخلى فقط</span></div>
+      <div class="section">
+        <div class="section-head"><span class="dot"></span>التوقيعات والاعتمادات <span class="en">Signatures &amp; Approvals</span></div>
         <div class="section-body">
-          <div class="locked-note" style="margin-bottom:10px;">هذا القسم مخصص لقسم البنوك، غير قابل للتعديل من هذا النموذج ولا يظهر عند الطباعة</div>
+          <div class="sign-grid sign-grid-3">
+            <div class="sign-box"><div class="role">محاسب المشروع<span class="en">Project Accountant</span></div><div class="sign-line"></div></div>
+            <div class="sign-box"><div class="role">المسئول المالى<span class="en">Finance Officer</span></div><div class="sign-line"></div></div>
+            <div class="sign-box"><div class="role">مدير البرنامج<span class="en">Program Manager</span></div><div class="sign-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section bank-section-bold">
+        <div class="section-head"><span class="dot"></span>بيانات خاصة بقسم البنوك <span class="en">Bank Department Use Only</span><span class="no-print-badge">يُعبأ يدويًا من قسم البنوك</span></div>
+        <div class="section-body">
+          <div class="locked-note no-print" style="margin-bottom:10px;">هذا القسم مخصص لقسم البنوك، غير قابل للتعديل من هذا النموذج</div>
           <div class="grid cols-3">
             <div class="field">
-              <label for="f_issueno">رقم الصادر</label>
+              <label for="f_issueno">رقم الصادر <span class="en">Reference No.</span></label>
               <input type="text" id="f_issueno" disabled>
             </div>
             <div class="field">
-              <label for="f_execdate">تاريخ تنفيذ التحويل</label>
+              <label for="f_execdate">تاريخ تنفيذ التحويل <span class="en">Execution Date</span></label>
               <input type="text" id="f_execdate" placeholder="يوم / شهر / سنة" maxlength="10" inputmode="numeric" autocomplete="off" disabled>
             </div>
             <div class="field">
-              <label>رصيد الحساب</label>
+              <label>رصيد الحساب <span class="en">Account Balance</span></label>
               <div class="radio-row disabled">
-                <label><input type="radio" name="balance" value="يسمح" disabled> يسمح</label>
-                <label><input type="radio" name="balance" value="لا يسمح" disabled> لا يسمح</label>
+                <label><input type="radio" name="balance" value="يسمح" disabled> يسمح <span class="en">Allowed</span></label>
+                <label><input type="radio" name="balance" value="لا يسمح" disabled> لا يسمح <span class="en">Not Allowed</span></label>
               </div>
             </div>
           </div>
@@ -432,18 +489,15 @@
       </div>
 
       <div class="section">
-        <div class="section-head"><span class="dot"></span>التوقيعات والاعتمادات</div>
+        <div class="section-head"><span class="dot"></span>المراجعة والاعتماد النهائى <span class="en">Final Review &amp; Approval</span></div>
         <div class="section-body">
-          <div class="sign-grid">
-            <div class="sign-box"><div class="role">محاسب المشروع</div><div class="sign-line"></div></div>
-            <div class="sign-box"><div class="role">المسئول المالى</div><div class="sign-line"></div></div>
-            <div class="sign-box"><div class="role">مدير البرنامج</div><div class="sign-line"></div></div>
-            <div class="sign-box"><div class="role">مدير قسم البنوك</div><div class="sign-line"></div></div>
+          <div class="sign-grid sign-grid-3 sign-grid-centered">
+            <div class="sign-box sign-label-only"><div class="role">مراجعة<span class="en">Review</span></div></div>
+            <div class="sign-box"><div class="role">مدير المراجعة<span class="en">Audit Manager</span></div><div class="sign-line"></div></div>
           </div>
-          <div class="sign-grid" style="margin-top:26px;">
-            <div class="sign-box"><div class="role">مدير قسم المراجعة</div><div class="sign-line"></div></div>
-            <div class="sign-box"><div class="role">المدير المالى</div><div class="sign-line"></div></div>
-            <div class="sign-box" style="grid-column:span 2;"><div class="role">المدير العام</div><div class="sign-line"></div></div>
+          <div class="sign-grid sign-grid-3 sign-grid-centered" style="margin-top:26px;">
+            <div class="sign-box"><div class="role">المدير المالى<span class="en">Finance Director</span></div><div class="sign-line"></div></div>
+            <div class="sign-box"><div class="role">المدير العام<span class="en">General Manager</span></div><div class="sign-line"></div></div>
           </div>
         </div>
       </div>
@@ -671,11 +725,17 @@ document.addEventListener('DOMContentLoaded', () => {
     external: document.querySelector('[data-panel="external"]')
   };
   let currentMode = 'internal';
+  const modeLabelEl = document.getElementById('f_modelabel');
   function setMode(mode){
     currentMode = mode;
     modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
     panels.internal.style.display = mode === 'internal' ? '' : 'none';
     panels.external.style.display = mode === 'external' ? '' : 'none';
+    if (modeLabelEl){
+      modeLabelEl.innerHTML = mode === 'internal'
+        ? 'نموذج داخلى <span class="en" style="opacity:.8;">Internal Form</span>'
+        : 'نموذج خارجى <span class="en" style="opacity:.8;">External Form</span>';
+    }
     clearValidation();
   }
   modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
@@ -721,9 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ['f_extname','بيانات المستفيد (فى حالة التحويل الخارجى): اسم الجهة المحول إليها'],
         ['f_extbank','بيانات المستفيد (فى حالة التحويل الخارجى): اسم البنك'],
         ['f_extbranch','بيانات المستفيد (فى حالة التحويل الخارجى): الفرع'],
-        ['f_extaccount','بيانات المستفيد (فى حالة التحويل الخارجى): رقم الحساب'],
-        ['f_extiban','بيانات المستفيد (فى حالة التحويل الخارجى): IBAN number'],
-        ['f_extswift','بيانات المستفيد (فى حالة التحويل الخارجى): SWIFT CODE']
+        ['f_extaccount','بيانات المستفيد (فى حالة التحويل الخارجى): رقم الحساب']
       ];
       extFields.forEach(([id,label]) => {
         const el = document.getElementById(id);
@@ -764,6 +822,88 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('f_date').value = todayStr;
     updateDayName();
     clearValidation();
+  });
+
+  function collectFormData(){
+    return {
+      version: 1,
+      mode: currentMode,
+      reqno: document.getElementById('f_reqno').value,
+      date: document.getElementById('f_date').value,
+      program: document.getElementById('f_program').value,
+      project: document.getElementById('f_project').value,
+      purpose: document.getElementById('f_purpose').value,
+      srcband: document.getElementById('f_srcband').value,
+      amount: document.getElementById('f_amount').value,
+      items: document.getElementById('f_items').value,
+      dstband: document.getElementById('f_dstband').value,
+      extname: document.getElementById('f_extname').value,
+      extbank: document.getElementById('f_extbank').value,
+      extbranch: document.getElementById('f_extbranch').value,
+      extaccount: document.getElementById('f_extaccount').value,
+      extiban: document.getElementById('f_extiban').value,
+      extswift: document.getElementById('f_extswift').value
+    };
+  }
+
+  function applyFormData(data){
+    if (!data) return;
+    if (data.mode) setMode(data.mode);
+    document.getElementById('f_reqno').value = data.reqno || '';
+    document.getElementById('f_date').value = data.date || '';
+    updateDayName();
+    document.getElementById('f_program').value = data.program || '';
+    document.getElementById('f_project').value = data.project || '';
+    document.getElementById('f_purpose').value = data.purpose || '';
+    document.getElementById('f_srcband').value = data.srcband || '';
+    document.getElementById('f_srcband').dispatchEvent(new Event('change'));
+    document.getElementById('f_amount').value = data.amount || '';
+    fillWords();
+    document.getElementById('f_items').value = data.items || '';
+    document.getElementById('f_dstband').value = data.dstband || '';
+    document.getElementById('f_dstband').dispatchEvent(new Event('change'));
+    document.getElementById('f_extname').value = data.extname || '';
+    document.getElementById('f_extbank').value = data.extbank || '';
+    document.getElementById('f_extbranch').value = data.extbranch || '';
+    document.getElementById('f_extaccount').value = data.extaccount || '';
+    document.getElementById('f_extiban').value = data.extiban || '';
+    document.getElementById('f_extswift').value = data.extswift || '';
+    clearValidation();
+  }
+
+  document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+    const data = collectFormData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `تمبلت-طلب-تحويل-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('loadTemplateBtn').addEventListener('click', () => {
+    document.getElementById('templateFileInput').click();
+  });
+
+  document.getElementById('templateFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        applyFormData(data);
+        alert('تم استدعاء النموذج المحفوظ بنجاح');
+      } catch (err) {
+        alert('تعذر قراءة الملف، تأكد أنه ملف تمبلت صحيح');
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file, 'utf-8');
   });
 });
 </script>
