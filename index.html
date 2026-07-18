@@ -137,9 +137,13 @@
   .grid.cols-3{ grid-template-columns:repeat(3, 1fr); }
   .grid.grid-general{ grid-template-columns: 0.7fr 1.1fr 1.4fr; }
   .field{ display:flex; flex-direction:column; gap:6px; min-width:0; }
-  .field.field-inline{ flex-direction:row; align-items:center; gap:10px; }
-  .field.field-inline label{ flex:none; white-space:nowrap; margin:0; }
-  .field.field-inline input{ flex:1; min-width:0; }
+  .field.field-inline{ flex-direction:row; align-items:flex-start; gap:10px; }
+  .field.field-inline label{ flex:none; white-space:nowrap; margin:0; padding-top:9px; }
+  .field.field-inline input, .field.field-inline textarea{ flex:1; min-width:0; }
+  .field.field-inline textarea{
+    resize:none; overflow:hidden; min-height:38px; line-height:1.4;
+    white-space:pre-wrap; word-break:break-word; font-family:inherit;
+  }
   .field.full{ grid-column:1 / -1; }
   label{ font-size:12.5px; font-weight:700; color:var(--navy); display:flex; justify-content:space-between; }
   .en{ font-size:10px; font-weight:500; opacity:.65; }
@@ -149,6 +153,22 @@
     font-family:inherit; font-size:14px; color:var(--ink);
     background:var(--field-bg); border:1px solid var(--line); border-radius:8px;
     padding:9px 11px; width:100%; transition:.12s ease;
+  }
+  select{ white-space:normal; height:auto; line-height:1.35; }
+  .wrap-select{ position:relative; }
+  .wrap-select-display{
+    border:1px solid var(--line); border-radius:8px; background:var(--field-bg);
+    padding:9px 30px 9px 11px; min-height:38px; box-sizing:border-box;
+    white-space:normal; word-break:break-word; line-height:1.35; color:var(--ink);
+    font-size:14px; display:flex; align-items:center; position:relative;
+  }
+  .wrap-select-display::after{
+    content:"▾"; position:absolute; inset-inline-end:11px; top:50%; transform:translateY(-50%);
+    color:var(--muted); font-size:12px; pointer-events:none;
+  }
+  .wrap-select-display.placeholder{ color:#93999f; }
+  .wrap-select-native{
+    position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; border:none;
   }
   .date-input-group{ display:flex; gap:6px; align-items:stretch; position:relative; }
   .date-input-group input[type=text]{ flex:1; min-width:0; }
@@ -255,6 +275,14 @@
     input, select, textarea{
       border-color:#9a9a9a; padding:2px 6px; font-size:9.5px; border-radius:5px;
     }
+    input::placeholder, textarea::placeholder{ color:transparent !important; opacity:0 !important; }
+    select{
+      -webkit-appearance:none; -moz-appearance:none; appearance:none;
+      background-image:none !important; padding-inline-end:6px;
+    }
+    .wrap-select-native{ display:none; }
+    .wrap-select-display{ padding:2px 6px; min-height:0; font-size:9.5px; border-color:#9a9a9a; }
+    .wrap-select-display::after{ display:none; }
     textarea{ min-height:16px; }
     .amount-words{ padding:4px 8px; font-size:10.5px; }
     .day-name-hint{ font-size:9px; min-height:10px; }
@@ -303,7 +331,7 @@
         </div>
         <div class="doc-code">
           <span id="f_modelabel">نموذج داخلى <span class="en" style="opacity:.8;">Internal Form</span></span><br>
-          <span class="no-print">تاريخ آخر تحديث: 17-6-2026</span>
+          <span class="no-print">تاريخ آخر تحديث: 18-7-2026</span>
         </div>
       </div>
       <div class="title-row">
@@ -339,7 +367,10 @@
             </div>
             <div class="field">
               <label for="f_program">البرنامج <span class="en">Program</span></label>
-              <select id="f_program"><option value="">-- اختر البرنامج --</option></select>
+              <div class="wrap-select">
+                <div class="wrap-select-display" id="f_program_display">-- اختر البرنامج --</div>
+                <select id="f_program" class="wrap-select-native"><option value="">-- اختر البرنامج --</option></select>
+              </div>
             </div>
             <div class="field field-project">
               <label for="f_project">المشروع <span class="en">Project</span></label>
@@ -347,7 +378,7 @@
             </div>
             <div class="field full field-inline">
               <label for="f_purpose">الغرض من التحويل <span class="en">Purpose of Transfer</span></label>
-              <input type="text" id="f_purpose" placeholder="اكتب الغرض من التحويل">
+              <textarea id="f_purpose" placeholder="اكتب الغرض من التحويل" rows="1"></textarea>
             </div>
           </div>
         </div>
@@ -388,6 +419,13 @@
             <div class="field full">
               <label>المبلغ بالحروف <span class="en">Amount in Words</span></label>
               <div class="amount-words" id="f_amountwords">—</div>
+            </div>
+            <div class="field full" id="f_commission_wrap" style="display:none;">
+              <label>عمولة التحويل <span class="en">Transfer Commission</span></label>
+              <div class="radio-row">
+                <label><input type="radio" name="commission" value="association"> تخصم من حسابات الجمعية <span class="en">From Association Accounts</span></label>
+                <label><input type="radio" name="commission" value="recipient"> تخصم من المحول إليه <span class="en">From Recipient</span></label>
+              </div>
             </div>
           </div>
         </div>
@@ -433,6 +471,10 @@
               <label for="f_extbank">اسم البنك <span class="en">Bank Name</span></label>
               <select id="f_extbank"><option value="">-- اختر اسم البنك --</option></select>
             </div>
+            <div class="field" id="f_extbank_manual_wrap" style="display:none;">
+              <label for="f_extbank_manual">اسم البنك (يدوى) <span class="en">Bank Name (Manual)</span></label>
+              <input type="text" id="f_extbank_manual" placeholder="اكتب اسم البنك">
+            </div>
             <div class="field">
               <label for="f_extbranch">الفرع <span class="en">Branch</span></label>
               <input type="text" id="f_extbranch">
@@ -457,7 +499,7 @@
         <div class="section-head"><span class="dot"></span>التوقيعات والاعتمادات <span class="en">Signatures &amp; Approvals</span></div>
         <div class="section-body">
           <div class="sign-grid sign-grid-3">
-            <div class="sign-box"><div class="role">محاسب المشروع<span class="en">Project Accountant</span></div><div class="sign-line"></div></div>
+            <div class="sign-box"><div class="role">محاسب المشروع / مراجع<span class="en">Project Accountant / Reviewer</span></div><div class="sign-line"></div></div>
             <div class="sign-box"><div class="role">المسئول المالى<span class="en">Finance Officer</span></div><div class="sign-line"></div></div>
             <div class="sign-box"><div class="role">مدير البرنامج<span class="en">Program Manager</span></div><div class="sign-line"></div></div>
           </div>
@@ -492,7 +534,7 @@
         <div class="section-head"><span class="dot"></span>المراجعة والاعتماد النهائى <span class="en">Final Review &amp; Approval</span></div>
         <div class="section-body">
           <div class="sign-grid sign-grid-3 sign-grid-centered">
-            <div class="sign-box sign-label-only"><div class="role">مراجعة<span class="en">Review</span></div></div>
+            <div class="sign-box sign-label-only"><div class="role">مراجع الادارة<span class="en">Management Reviewer</span></div></div>
             <div class="sign-box"><div class="role">مدير المراجعة<span class="en">Audit Manager</span></div><div class="sign-line"></div></div>
           </div>
           <div class="sign-grid sign-grid-3 sign-grid-centered" style="margin-top:26px;">
@@ -679,12 +721,45 @@ function wireAccountLookup(selId, bankId, currencyId, accountId, bandId){
 
 document.addEventListener('DOMContentLoaded', () => {
   populateSelect(document.getElementById('f_program'), PROGRAMS);
+  const programSelect = document.getElementById('f_program');
+  const programDisplay = document.getElementById('f_program_display');
+  function syncProgramDisplay(){
+    const val = programSelect.value;
+    if (!val){
+      programDisplay.textContent = '-- اختر البرنامج --';
+      programDisplay.classList.add('placeholder');
+    } else {
+      programDisplay.textContent = val;
+      programDisplay.classList.remove('placeholder');
+    }
+  }
+  programSelect.addEventListener('change', syncProgramDisplay);
+  syncProgramDisplay();
   populateSelect(document.getElementById('f_extbank'), BANKS);
+  const extbankSelect = document.getElementById('f_extbank');
+  const extbankManualOpt = document.createElement('option');
+  extbankManualOpt.value = '__manual__';
+  extbankManualOpt.textContent = 'أخرى (إدخال يدوى) — Other (Manual Entry)';
+  extbankSelect.appendChild(extbankManualOpt);
+  const extbankManualWrap = document.getElementById('f_extbank_manual_wrap');
+  extbankSelect.addEventListener('change', () => {
+    const isManual = extbankSelect.value === '__manual__';
+    extbankManualWrap.style.display = isManual ? '' : 'none';
+    if (isManual) document.getElementById('f_extbank_manual').focus();
+  });
   populateAccountSelect(document.getElementById('f_srcband'));
   populateAccountSelect(document.getElementById('f_dstband'));
 
   wireAccountLookup('f_srcband','f_srcbank','f_srccurrency','f_srcaccount','f_srcbandnum');
   wireAccountLookup('f_dstband','f_dstbank','f_dstcurrency','f_dstaccount','f_dstbandnum');
+
+  const purposeEl = document.getElementById('f_purpose');
+  function autoGrowPurpose(){
+    purposeEl.style.height = 'auto';
+    purposeEl.style.height = purposeEl.scrollHeight + 'px';
+  }
+  purposeEl.addEventListener('input', autoGrowPurpose);
+  autoGrowPurpose();
 
   document.getElementById('f_amount').addEventListener('input', fillWords);
 
@@ -731,6 +806,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
     panels.internal.style.display = mode === 'internal' ? '' : 'none';
     panels.external.style.display = mode === 'external' ? '' : 'none';
+    const commissionWrap = document.getElementById('f_commission_wrap');
+    if (commissionWrap) commissionWrap.style.display = mode === 'external' ? '' : 'none';
     if (modeLabelEl){
       modeLabelEl.innerHTML = mode === 'internal'
         ? 'نموذج داخلى <span class="en" style="opacity:.8;">Internal Form</span>'
@@ -779,7 +856,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       const extFields = [
         ['f_extname','بيانات المستفيد (فى حالة التحويل الخارجى): اسم الجهة المحول إليها'],
-        ['f_extbank','بيانات المستفيد (فى حالة التحويل الخارجى): اسم البنك'],
         ['f_extbranch','بيانات المستفيد (فى حالة التحويل الخارجى): الفرع'],
         ['f_extaccount','بيانات المستفيد (فى حالة التحويل الخارجى): رقم الحساب']
       ];
@@ -787,6 +863,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById(id);
         if (!el.value.trim()){ missing.push(label); markInvalid(id); }
       });
+      if (!extbankSelect.value){
+        missing.push('بيانات المستفيد (فى حالة التحويل الخارجى): اسم البنك');
+        markInvalid('f_extbank');
+      } else if (extbankSelect.value === '__manual__' && !document.getElementById('f_extbank_manual').value.trim()){
+        missing.push('بيانات المستفيد (فى حالة التحويل الخارجى): اسم البنك (يدوى)');
+        markInvalid('f_extbank_manual');
+      }
     }
 
     if (missing.length){
@@ -808,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('printBtn').addEventListener('click', () => {
     if (validateForm()) window.print();
   });
-  ['f_purpose','f_srcband','f_amount','f_dstband','f_extname','f_extbank','f_extbranch','f_extaccount','f_extiban','f_extswift'].forEach(id => {
+  ['f_purpose','f_srcband','f_amount','f_dstband','f_extname','f_extbank','f_extbank_manual','f_extbranch','f_extaccount','f_extiban','f_extswift'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener('input', () => el.classList.remove('field-invalid'));
@@ -821,6 +904,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('f_amountwords').textContent = '—';
     document.getElementById('f_date').value = todayStr;
     updateDayName();
+    autoGrowPurpose();
+    syncProgramDisplay();
     clearValidation();
   });
 
@@ -839,10 +924,12 @@ document.addEventListener('DOMContentLoaded', () => {
       dstband: document.getElementById('f_dstband').value,
       extname: document.getElementById('f_extname').value,
       extbank: document.getElementById('f_extbank').value,
+      extbankManual: document.getElementById('f_extbank_manual').value,
       extbranch: document.getElementById('f_extbranch').value,
       extaccount: document.getElementById('f_extaccount').value,
       extiban: document.getElementById('f_extiban').value,
-      extswift: document.getElementById('f_extswift').value
+      extswift: document.getElementById('f_extswift').value,
+      commission: (document.querySelector('input[name="commission"]:checked') || {}).value || ''
     };
   }
 
@@ -853,8 +940,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('f_date').value = data.date || '';
     updateDayName();
     document.getElementById('f_program').value = data.program || '';
+    syncProgramDisplay();
     document.getElementById('f_project').value = data.project || '';
     document.getElementById('f_purpose').value = data.purpose || '';
+    autoGrowPurpose();
     document.getElementById('f_srcband').value = data.srcband || '';
     document.getElementById('f_srcband').dispatchEvent(new Event('change'));
     document.getElementById('f_amount').value = data.amount || '';
@@ -864,10 +953,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('f_dstband').dispatchEvent(new Event('change'));
     document.getElementById('f_extname').value = data.extname || '';
     document.getElementById('f_extbank').value = data.extbank || '';
+    document.getElementById('f_extbank_manual').value = data.extbankManual || '';
+    document.getElementById('f_extbank_manual_wrap').style.display = (data.extbank === '__manual__') ? '' : 'none';
     document.getElementById('f_extbranch').value = data.extbranch || '';
     document.getElementById('f_extaccount').value = data.extaccount || '';
     document.getElementById('f_extiban').value = data.extiban || '';
     document.getElementById('f_extswift').value = data.extswift || '';
+    document.querySelectorAll('input[name="commission"]').forEach(r => { r.checked = (r.value === data.commission); });
     clearValidation();
   }
 
